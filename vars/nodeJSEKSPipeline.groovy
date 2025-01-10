@@ -7,6 +7,10 @@ def call(Map configMap){
             disableConcurrentBuilds()
 
         }
+        }
+        parameters{
+            booleanParam(name: 'deploy', defaultValue: false, description: 'Select to deploy or not')
+        }
         environment{
             appVersion = ''
             region = 'us-east-1'
@@ -57,6 +61,9 @@ def call(Map configMap){
                 }
             }
             stage('Deploy'){
+                when{
+                    expression {params.deploy}
+                }
                 steps{
                     withAWS(region: 'us-east-1', credentials: 'aws-creds'){
                         sh """
